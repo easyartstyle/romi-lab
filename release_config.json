@@ -1,0 +1,9 @@
+﻿{
+    "app_name":  "ROMI Lab",
+    "publisher":  "easyartstyle",
+    "github_owner":  "easyartstyle",
+    "github_repo":  "romi-lab",
+    "update_check_enabled":  true,
+    "release_api_template":  "https://api.github.com/repos/{owner}/{repo}/releases/latest",
+    "release_page_template":  "https://github.com/{owner}/{repo}/releases/latest"
+}

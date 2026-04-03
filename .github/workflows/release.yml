@@ -1,0 +1,41 @@
+﻿name: Release Desktop App
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller pandas numpy matplotlib pyqt6 openpyxl
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build desktop release
+        shell: powershell
+        run: |
+          powershell -ExecutionPolicy Bypass -File .\release\build_desktop.ps1 -PythonExe python
+
+      - name: Publish GitHub Release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist\AnalyticsApp.exe
+            dist\AnalyticsApp-Setup-*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
