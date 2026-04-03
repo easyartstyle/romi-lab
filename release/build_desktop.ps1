@@ -18,7 +18,9 @@ $pyiArgs = @(
   '-m', 'PyInstaller',
   '--noconfirm', '--clean', '--windowed', '--onefile',
   '--name', 'ROMILab',
-  '--add-data', "VERSION;."
+  '--add-data', "VERSION;.",
+  '--add-data', "release_config.json;.",
+  '--add-data', "app_release.py;."
 )
 if (Test-Path $iconPath) {
   $pyiArgs += @('--icon', $iconPath)

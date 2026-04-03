@@ -10,8 +10,8 @@ DEFAULT_VERSION = "0.1.0"
 DEFAULT_RELEASE_CONFIG = {
     "app_name": "ROMI Lab",
     "publisher": "easyartstyle",
-    "github_owner": "",
-    "github_repo": "",
+    "github_owner": "easyartstyle",
+    "github_repo": "romi-lab",
     "update_check_enabled": True,
     "release_api_template": "https://api.github.com/repos/{owner}/{repo}/releases/latest",
     "release_page_template": "https://github.com/{owner}/{repo}/releases/latest",
@@ -56,4 +56,5 @@ def version_tuple(value: str) -> tuple[int, ...]:
 
 def is_newer_version(latest: str, current: str) -> bool:
     return version_tuple(latest) > version_tuple(current)
+
 

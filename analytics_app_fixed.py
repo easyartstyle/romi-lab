@@ -54,8 +54,8 @@ else :
         return {
         "app_name":"ROMI Lab",
         "publisher":"easyartstyle",
-        "github_owner":"",
-        "github_repo":"",
+        "github_owner":"easyartstyle",
+        "github_repo":"romi-lab",
         "update_check_enabled":True ,
         "release_api_template":"https://api.github.com/repos/{owner}/{repo}/releases/latest",
         "release_page_template":"https://github.com/{owner}/{repo}/releases/latest",
@@ -13223,6 +13223,7 @@ if __name__ =="__main__":
     window =AnalyticsApp ()
     window .show ()
     sys .exit (app .exec ())
+
 
 
 
