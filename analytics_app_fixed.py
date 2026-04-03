@@ -10,6 +10,7 @@ import shutil
 import urllib .request 
 import urllib .error 
 import urllib .parse 
+import importlib .util 
 from io import StringIO 
 from datetime import datetime ,timedelta # <-- ДОАВЛЯЕМ timedelta
 from PyQt6 .QtWidgets import *
@@ -25,10 +26,28 @@ WORKSPACE_ROOT =Path (__file__ ).resolve ().parent
 if str (WORKSPACE_ROOT )not in sys .path :
     sys .path .insert (0 ,str (WORKSPACE_ROOT ))
 
+def _load_release_module ():
+    try :
+        module_path =WORKSPACE_ROOT /"app_release.py"
+        if not module_path .exists ():
+            return None 
+        spec =importlib .util .spec_from_file_location ("app_release_local",str (module_path ))
+        if not spec or not spec .loader :
+            return None 
+        module =importlib .util .module_from_spec (spec )
+        spec .loader .exec_module (module )
+        return module 
+    except Exception :
+        return None 
 
-try :
-    from app_release import load_app_version ,load_release_config ,normalize_version ,is_newer_version 
-except Exception :
+_release_module =_load_release_module ()
+
+if _release_module :
+    load_app_version =_release_module .load_app_version 
+    load_release_config =_release_module .load_release_config 
+    normalize_version =_release_module .normalize_version 
+    is_newer_version =_release_module .is_newer_version 
+else :
     def load_app_version ():
         return "0.1.0"
     def load_release_config ():
@@ -51,6 +70,8 @@ except Exception :
                 digits ="".join (ch for ch in part if ch .isdigit ())
                 parts .append (int (digits )if digits else 0 )
             return tuple (parts )
+        return version_tuple (latest )>version_tuple (current )
+
         return version_tuple (latest )>version_tuple (current )
 
 try :

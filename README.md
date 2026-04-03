@@ -27,3 +27,10 @@ powershell -ExecutionPolicy Bypass -File Q:\CODEX\release\build_desktop.ps1 -Pyt
 ## Автообновление
 Desktop-приложение проверяет новые версии через GitHub Releases при запуске.
 Для этого нужно настроить `github_owner` и `github_repo` в `release_config.json`.
+
+## Цикл обновлений
+- правки в коде
+- push на GitHub
+- новый тег и релиз
+- приложение получает обновление через проверку при старте или через Справка -> Проверить обновления`r
+
