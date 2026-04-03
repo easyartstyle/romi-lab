@@ -1016,6 +1016,9 @@ class AnalyticsApp (QMainWindow ):
         about_action =QAction ("О программе",self )
         about_action .triggered .connect (self .show_about_dialog )
         help_menu .addAction (about_action )
+        check_updates_action =QAction ("Проверить обновления",self )
+        check_updates_action .triggered .connect (lambda :self .check_for_updates_on_startup (True ))
+        help_menu .addAction (check_updates_action )
 
         logs_menu =menubar .addMenu ("Логи")
         export_logs_action =QAction ("Экспорт логов",self )
@@ -13128,23 +13131,30 @@ class AnalyticsApp (QMainWindow ):
         with urllib .request .urlopen (request ,timeout =60 )as response ,open (target_path ,"wb")as output_file :
             output_file .write (response .read ())
         return target_path 
-
-    def check_for_updates_on_startup (self ):
+    def check_for_updates_on_startup (self ,manual =False ):
         config =getattr (self ,"release_config",{})or {}
         if not bool (config .get ("update_check_enabled",True )):
+            if manual :
+                QMessageBox .information (self ,"Проверка обновлений","Проверка обновлений отключена в настройках релиза.")
             return 
         api_url ,page_url =self ._get_release_urls ()
         if not api_url :
             self .log ("Проверка обновлений пропущена: GitHub репозиторий еще не настроен")
+            if manual :
+                QMessageBox .information (self ,"Проверка обновлений","GitHub-репозиторий для обновлений еще не настроен.")
             return 
         try :
             latest_release =self ._fetch_latest_release_info ()
             if not latest_release :
+                if manual :
+                    QMessageBox .information (self ,"Проверка обновлений","Не удалось получить информацию о последнем релизе.")
                 return 
             latest_version =normalize_version (latest_release .get ("tag_name")or latest_release .get ("name")or "")
             current_version =normalize_version (getattr (self ,"app_version","0.1.0"))
             if not is_newer_version (latest_version ,current_version ):
                 self .log (f"Проверка обновлений: установлена актуальная версия {current_version }")
+                if manual :
+                    QMessageBox .information (self ,"Проверка обновлений",f"У вас уже установлена актуальная версия: {current_version }")
                 return 
             assets =latest_release .get ("assets",[])if isinstance (latest_release ,dict )else []
             installer_asset =None 
@@ -13185,6 +13195,8 @@ class AnalyticsApp (QMainWindow ):
                         self .log (f"Не удалось открыть страницу релиза: {open_error }")
         except Exception as e :
             self .log (f"Проверка обновлений пропущена из-за ошибки: {e }")
+            if manual :
+                QMessageBox .warning (self ,"Проверка обновлений",f"Не удалось проверить обновления:\n{e }")
 if __name__ =="__main__":
     app =QApplication (sys .argv )
     window =AnalyticsApp ()

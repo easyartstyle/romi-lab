@@ -6,6 +6,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-release:
     runs-on: windows-latest
@@ -32,10 +35,11 @@ jobs:
           powershell -ExecutionPolicy Bypass -File .\release\build_desktop.ps1 -PythonExe python
 
       - name: Publish GitHub Release assets
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist\AnalyticsApp.exe
-            dist\AnalyticsApp-Setup-*.exe
+            dist\ROMILab.exe
+            dist\ROMILab-Setup-*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
