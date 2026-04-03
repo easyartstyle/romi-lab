@@ -515,7 +515,7 @@ class AnalyticsApp (QMainWindow ):
         header .setStretchLastSection (True )
 
     def refresh_plan_dimension_options (self ):
-        """Обновляетт списки Источник/Тип во вкладке Плана из реальных данных."""
+        """Обновляет списки Источник/Тип во вкладке Плана из реальных данных."""
         if not hasattr (self ,"plan_source")or not hasattr (self ,"plan_medium"):
             return 
 
@@ -2141,13 +2141,13 @@ class AnalyticsApp (QMainWindow ):
                 self .log (f"Всего строк: {len (df )}")
                 self .log (f"Колонки: {df .columns .tolist ()}")
                 self .log (f"Расход (суа): {df ['Расход'].sum ():,.2f}")
-                self .log (f"Лиды (суа): {df ['Лиды'].sum ():,.0f}")
+                self .log (f"Лиды (сумма): {df ['Лиды'].sum ():,.0f}")
                 self .log (f"Продажи (сумма): {df ['Продажи'].sum ():,.0f}")
 
                 info =f"Загружено {len (df )} строк данных реклаы\n"
                 info +=f"Колонки: {', '.join (df .columns .tolist ())}\n"
                 info +=f"Расход (суа): {df ['Расход'].sum ():,.2f} руб\n"
-                info +=f"Лиды (суа): {df ['Лиды'].sum ():,.0f}\n"
+                info +=f"Лиды (сумма): {df ['Лиды'].sum ():,.0f}\n"
                 info +=f"Продажи (сумма): {df ['Продажи'].sum ():,.0f}\n"
                 if len (df )>0 and pd .notna (df ['Дата'].min ())and pd .notna (df ['Дата'].max ()):
                     info +=f"Диапазон дат: {df ['Дата'].min ().strftime ('%d.%m.%Y')} - {df ['Дата'].max ().strftime ('%d.%m.%Y')}"
@@ -2306,7 +2306,7 @@ class AnalyticsApp (QMainWindow ):
                 # Показывае инфорацию о загруженных данных
                 info =f"Загружено {len (df )} строк данных CRM\n"
                 info +=f"Колонки: {', '.join (df .columns .tolist ())}\n"
-                info +=f"Лиды (суа): {df ['Лиды'].sum ():,.0f}\n"
+                info +=f"Лиды (сумма): {df ['Лиды'].sum ():,.0f}\n"
                 info +=f"Продажи (сумма): {df ['Продажи'].sum ():,.0f}\n"
                 if len (df )>0 and pd .notna (df ['Дата'].min ())and pd .notna (df ['Дата'].max ()):
                     info +=f"Диапазон дат: {df ['Дата'].min ().strftime ('%d.%m.%Y')} - {df ['Дата'].max ().strftime ('%d.%m.%Y')}"
@@ -4946,7 +4946,7 @@ class AnalyticsApp (QMainWindow ):
         card_layout .setContentsMargins (28 ,26 ,28 ,24 )
         card_layout .setSpacing (18 )
 
-        self .plan_form_title =QLabel ("Фора планирования")
+        self .plan_form_title =QLabel ("Форма планирования")
         self .plan_form_title .setObjectName ("planFormTitle")
         card_layout .addWidget (self .plan_form_title )
 
@@ -5078,7 +5078,7 @@ class AnalyticsApp (QMainWindow ):
         self .reset_plan_btn .clicked .connect (self .reset_plan )
         btn_layout .addWidget (self .reset_plan_btn )
 
-        self .plans_list_btn =QPushButton ("📋 стория планов")
+        self .plans_list_btn =QPushButton ("📋 История планов")
         self .plans_list_btn .setFixedWidth (160 )
         self .plans_list_btn .setFixedHeight (42 )
         self .plans_list_btn .setObjectName ("planSecondaryButton")
@@ -5118,7 +5118,7 @@ class AnalyticsApp (QMainWindow ):
             from_date =self .plan_date_from .date ().toPyDate ()
             to_date =self .plan_date_to .date ().toPyDate ()
 
-            self .log (f"\n=== СОХРАНЕНЕ ПЛАНА ===")
+            self .log (f"\n=== СОХРАНЕНИЕ ПЛАНА ===")
             self .log (f"Период: {from_date } - {to_date }")
             self .log (f"юджет: {self .plan_budget .text ()}")
             self .log (f"Лиды: {self .plan_leads .text ()}")
@@ -5148,7 +5148,7 @@ class AnalyticsApp (QMainWindow ):
                 self .plans_history [self .current_client ]={}
             self .plans_history [self .current_client ][period_key ]=plan 
 
-            self .log (f"стория планов для {self .current_client }: {list (self .plans_history [self .current_client ].keys ())}")
+            self .log (f"История планов для {self .current_client }: {list (self .plans_history [self .current_client ].keys ())}")
 
             # Сохраняе историю в файл
             self .save_plans_history ()
@@ -5222,7 +5222,7 @@ class AnalyticsApp (QMainWindow ):
 
         layout =QVBoxLayout (dialog )
 
-        layout .addWidget (QLabel ("Выберите период для загрузки плана:"))
+        layout .addWidget (QLabel ("Выберите период для загрузки или удаления плана:"))
 
         list_widget =QListWidget ()
         for period_key ,plan in self .plans_history [self .current_client ].items ():
@@ -5230,7 +5230,7 @@ class AnalyticsApp (QMainWindow ):
             to_date =plan ["period_to"].strftime ("%d.%m.%Y")
             budget =plan ["budget"]
             leads =plan ["leads"]
-            item_text =f"{from_date } - {to_date } | юджет: {budget :,.0f} руб | Лиды: {leads }"
+            item_text =f"{from_date } - {to_date } | Бюджет: {budget :,.0f} руб | Лиды: {leads }"
             list_widget .addItem (item_text )
 
         layout .addWidget (list_widget )
@@ -5291,7 +5291,7 @@ class AnalyticsApp (QMainWindow ):
             with open (plans_file ,'w',encoding ='utf-8')as f :
                 json .dump (plans_data ,f ,ensure_ascii =False ,indent =2 )
 
-            self .log (f"стория планов сохранена в {plans_file }")
+            self .log (f"История планов сохранена в {plans_file }")
         except Exception as e :
             self .log (f"Ошибка сохранения истории планов: {e }")
 
@@ -5321,13 +5321,13 @@ class AnalyticsApp (QMainWindow ):
                     "cpl":plan_data ["cpl"]
                     }
 
-            self .log (f"стория планов загружена")
+            self .log (f"История планов загружена")
         except Exception as e :
             self .log (f"Ошибка загрузки истории планов: {e }")
 
     def debug_plans (self ):
         """Выводит в лог все сохраненные планы"""
-        self .log ("\n=== ДЕАГ СТОР ПЛАНОВ ===")
+        self .log ("\n=== ДЕБАГ ИСТОРИИ ПЛАНОВ ===")
         for client ,periods in self .plans_history .items ():
             self .log (f"Клиент: {client }")
             for period_key ,plan in periods .items ():
@@ -13223,6 +13223,7 @@ if __name__ =="__main__":
     window =AnalyticsApp ()
     window .show ()
     sys .exit (app .exec ())
+
 
 
 
